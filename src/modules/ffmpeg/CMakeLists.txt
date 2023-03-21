@@ -4,6 +4,8 @@ project (ffmpeg)
 set(SOURCES
 	producer/av_producer.cpp
 	producer/av_input.cpp
+    producer/av_decoder.cpp
+    producer/av_filter.cpp
 	util/av_util.cpp
 	producer/ffmpeg_producer.cpp
 	consumer/ffmpeg_consumer.cpp
@@ -15,6 +17,9 @@ set(HEADERS
 	util/av_assert.h
 	producer/av_producer.h
 	producer/av_input.h
+    producer/av_decoder.h
+    producer/av_filter.h
+    producer/av_common.h
 	util/av_util.h
 	producer/ffmpeg_producer.h
 	consumer/ffmpeg_consumer.h
