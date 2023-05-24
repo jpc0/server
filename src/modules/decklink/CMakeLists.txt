@@ -52,6 +52,8 @@ else()
 endif ()
 
 add_library(decklink ${SOURCES} ${HEADERS} ${OS_SPECIFIC_SOURCES})
+target_compile_features(decklink PRIVATE cxx_std_17)
+set_target_properties(decklink PROPERTIES CXX_EXTENSIONS OFF)
 add_precompiled_header(decklink StdAfx.h FORCEINCLUDE)
 configure_file("${PROJECT_SOURCE_DIR}/packages.config" "${CMAKE_CURRENT_BINARY_DIR}/packages.config")
 

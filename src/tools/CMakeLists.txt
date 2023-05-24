@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 3.10)
 
 include_directories(..)
 add_executable(bin2c bin2c.cpp)
+target_compile_features(bin2c PRIVATE cxx_std_17)
+set_target_properties(bin2c PROPERTIES CXX_EXTENSIONS OFF)
 
 function(bin2c source_file dest_file namespace obj_name)
     ADD_CUSTOM_COMMAND(

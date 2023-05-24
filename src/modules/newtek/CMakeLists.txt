@@ -44,6 +44,8 @@ if (MSVC)
 endif()
 
 add_library(newtek ${SOURCES} ${HEADERS})
+target_compile_features(newtek PRIVATE cxx_std_17)
+set_target_properties(newtek PROPERTIES CXX_EXTENSIONS OFF)
 add_precompiled_header(newtek StdAfx.h FORCEINCLUDE)
 configure_file("${PROJECT_SOURCE_DIR}/packages.config" "${CMAKE_CURRENT_BINARY_DIR}/packages.config")
 

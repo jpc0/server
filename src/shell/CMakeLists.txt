@@ -31,6 +31,8 @@ set(HEADERS
 )
 
 add_executable(casparcg ${SOURCES} ${HEADERS} ${OS_SPECIFIC_SOURCES})
+target_compile_features(casparcg PRIVATE cxx_std_17)
+set_target_properties(casparcg PROPERTIES CXX_EXTENSIONS OFF)
 
 include_directories(..)
 include_directories(${BOOST_INCLUDE_PATH})
@@ -101,6 +103,8 @@ else ()
 endif ()
 
 add_custom_target(casparcg_copy_dependencies ALL)
+set_target_properties(casparcg_copy_dependencies PROPERTIES CXX_STANDARD 17)
+set_target_properties(casparcg_copy_dependencies PROPERTIES CXX_EXTENSIONS OFF)
 
 set(OUTPUT_FOLDER "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
 add_custom_command(TARGET casparcg_copy_dependencies POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory \"${OUTPUT_FOLDER}\")

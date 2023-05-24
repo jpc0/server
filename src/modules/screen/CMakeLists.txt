@@ -29,6 +29,8 @@ else ()
 endif ()
 
 add_library(screen ${SOURCES} ${OS_SPECIFIC_SOURCES} ${HEADERS} ${OS_SPECIFIC_HEADERS})
+target_compile_features(screen PRIVATE cxx_std_17)
+set_target_properties(screen PROPERTIES CXX_EXTENSIONS OFF)
 configure_file("${PROJECT_SOURCE_DIR}/packages.config" "${CMAKE_CURRENT_BINARY_DIR}/packages.config")
 
 include_directories(..)

@@ -63,6 +63,8 @@ set(HEADERS
 )
 
 add_library(common ${SOURCES} ${HEADERS} ${OS_SPECIFIC_SOURCES})
+target_compile_features(common PRIVATE cxx_std_17)
+set_target_properties(common PROPERTIES CXX_EXTENSIONS OFF)
 add_precompiled_header(common stdafx.h FORCEINCLUDE)
 configure_file("${PROJECT_SOURCE_DIR}/packages.config" "${CMAKE_CURRENT_BINARY_DIR}/packages.config")
 

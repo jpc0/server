@@ -18,6 +18,8 @@ set(HEADERS
 )
 
 add_library(bluefish ${SOURCES} ${HEADERS})
+target_compile_features(bluefish PRIVATE cxx_std_17)
+set_target_properties(bluefish PROPERTIES CXX_EXTENSIONS OFF)
 add_precompiled_header(bluefish StdAfx.h FORCEINCLUDE)
 configure_file("${PROJECT_SOURCE_DIR}/packages.config" "${CMAKE_CURRENT_BINARY_DIR}/packages.config")
 
