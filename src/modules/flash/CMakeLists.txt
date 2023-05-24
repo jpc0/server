@@ -31,8 +31,9 @@ target_compile_features(flash PRIVATE cxx_std_14)
 set_target_properties(flash PROPERTIES CXX_EXTENSIONS OFF)
 
 IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-target_compile_options(protocol -Wno-terminate)
-ENDIF
+    target_compile_options(flash PRIVATE -Wno-terminate)
+ENDIF()
+
 
 
 add_precompiled_header(flash StdAfx.h FORCEINCLUDE)

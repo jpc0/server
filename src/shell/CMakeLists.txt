@@ -34,9 +34,10 @@ add_executable(casparcg ${SOURCES} ${HEADERS} ${OS_SPECIFIC_SOURCES})
 target_compile_features(casparcg PRIVATE cxx_std_14)
 set_target_properties(casparcg PROPERTIES CXX_EXTENSIONS OFF)
 
+
 IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-target_compile_options(protocol -Wno-terminate)
-ENDIF
+    target_compile_options(casparcg PRIVATE -Wno-terminate)
+ENDIF()
 
 
 

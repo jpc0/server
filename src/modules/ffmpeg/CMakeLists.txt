@@ -28,8 +28,10 @@ target_compile_features(ffmpeg PRIVATE cxx_std_14)
 set_target_properties(ffmpeg PROPERTIES CXX_EXTENSIONS OFF)
 
 IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-target_compile_options(protocol -Wno-terminate)
-ENDIF
+    target_compile_options(ffmpeg PRIVATE -Wno-terminate)
+ENDIF()
+
+
 
 
 add_precompiled_header(ffmpeg StdAfx.h FORCEINCLUDE)

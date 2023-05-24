@@ -48,8 +48,9 @@ target_compile_features(newtek PRIVATE cxx_std_14)
 set_target_properties(newtek PROPERTIES CXX_EXTENSIONS OFF)
 
 IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-target_compile_options(protocol -Wno-terminate)
-ENDIF
+    target_compile_options(newtek PRIVATE -Wno-terminate)
+ENDIF()
+
 
 
 add_precompiled_header(newtek StdAfx.h FORCEINCLUDE)

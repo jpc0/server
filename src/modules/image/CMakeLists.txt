@@ -32,8 +32,10 @@ target_compile_features(image PRIVATE cxx_std_14)
 set_target_properties(image PROPERTIES CXX_EXTENSIONS OFF)
 
 IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-target_compile_options(protocol -Wno-terminate)
-ENDIF
+    target_compile_options(image PRIVATE -Wno-terminate)
+ENDIF()
+
+
 
 
 configure_file("${PROJECT_SOURCE_DIR}/packages.config" "${CMAKE_CURRENT_BINARY_DIR}/packages.config")
