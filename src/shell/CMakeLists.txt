@@ -56,7 +56,6 @@ if (MSVC)
 		debug tbb_debug.lib
 		debug tbbmalloc_debug.lib
 		OpenGL32.lib
-		glew32.lib
 		openal32.lib
 		debug zlibstaticd.lib
 		optimized zlibstatic.lib
@@ -86,7 +85,6 @@ else ()
 		${TBB_MALLOC_LIBRARIES}
 		${TBB_MALLOC_PROXY_LIBRARIES}
 		${SFML_LIBRARIES}
-		${GLEW_LIBRARIES}
 		OpenGL::OpenGL
 		${X11_LIBRARIES}
 		${FFMPEG_LIBRARIES}

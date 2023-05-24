@@ -24,7 +24,7 @@
 
 #include <common/gl/gl_check.h>
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 
 namespace caspar { namespace accelerator { namespace ogl {
 

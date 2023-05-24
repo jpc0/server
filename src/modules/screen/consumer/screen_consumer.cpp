@@ -21,7 +21,7 @@
 
 #include "screen_consumer.h"
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 #include <SFML/Window.hpp>
 
 #include <common/array.h>
@@ -250,13 +250,18 @@ struct screen_consumer
                     window_always_on_top(window_);
 #endif
                 }
-
-                if (glewInit() != GLEW_OK) {
-                    CASPAR_THROW_EXCEPTION(gl::ogl_exception() << msg_info("Failed to initialize GLEW."));
+                int version = gladLoaderLoadGL();
+                if (version == 0) {
+                    CASPAR_THROW_EXCEPTION(gl::ogl_exception() << msg_info("Failed to initialize GLAD."));
                 }
 
-                if (!GLEW_VERSION_4_5 && (glewIsSupported("GL_ARB_sync GL_ARB_shader_objects GL_ARB_multitexture "
-                                                          "GL_ARB_direct_state_access GL_ARB_texture_barrier") == 0u)) {
+                if (!(GLAD_VERSION_MAJOR(version) != 5 && GLAD_VERSION_MINOR(version) != 4)
+                    &&
+                    !(GLAD_GL_ARB_sync &&
+                        GLAD_GL_ARB_shader_objects &&
+                        GLAD_GL_ARB_multitexture &&
+                        GLAD_GL_ARB_direct_state_access &&
+                        GLAD_GL_ARB_texture_barrier)) {
                     CASPAR_THROW_EXCEPTION(not_supported() << msg_info(
                                                "Your graphics card does not meet the minimum hardware requirements "
                                                "since it does not support OpenGL 4.5 or higher."));

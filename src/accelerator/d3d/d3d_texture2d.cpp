@@ -2,8 +2,8 @@
 
 #include <common/gl/gl_check.h>
 
-#include <GL/glew.h>
-#include <GL/wglew.h>
+#include <glad/gl.h>
+#include <glad/wgl.h>
 #include <atlcomcli.h>
 
 namespace caspar { namespace accelerator { namespace d3d {

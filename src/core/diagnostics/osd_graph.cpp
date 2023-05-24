@@ -37,7 +37,8 @@
 
 #include <tbb/concurrent_unordered_map.h>
 
-#include <GL/glew.h>
+#include <glad/gl.h>
+#include <glad/wgl.h>
 
 #include <atomic>
 #include <list>

@@ -115,13 +115,6 @@ casparcg_add_runtime_dependency("${TBB_BIN_PATH}/tbbmalloc_debug.dll")
 casparcg_add_runtime_dependency("${TBB_BIN_PATH}/tbbmalloc_proxy.dll")
 casparcg_add_runtime_dependency("${TBB_BIN_PATH}/tbbmalloc_proxy_debug.dll")
 
-# GLEW
-set(GLEW_INCLUDE_PATH "${PACKAGES_FOLDER}/glew/include")
-set(GLEW_BIN_PATH "${PACKAGES_FOLDER}/glew/bin/win32")
-link_directories("${PACKAGES_FOLDER}/glew/lib/win32")
-add_definitions( -DGLEW_NO_GLU )
-casparcg_add_runtime_dependency("${GLEW_BIN_PATH}/glew32.dll")
-
 # SFML
 set(SFML_INCLUDE_PATH "${NUGET_PACKAGES_FOLDER}/sfml-system.2.4.2.0/build/native/include")
 link_directories("${NUGET_PACKAGES_FOLDER}/sfml-graphics.2.4.2.0/build/native/lib/x64/v140/Debug/dynamic")
@@ -210,3 +203,4 @@ add_subdirectory(core)
 add_subdirectory(modules)
 add_subdirectory(protocol)
 add_subdirectory(shell)
+add_subdirectory(packages)

@@ -55,7 +55,7 @@
 //#include <boost/log/sources/severity_channel_logger.hpp>
 //#include <boost/log/trivial.hpp>
 //#include <boost/log/utility/setup/common_attributes.hpp>
-#include <GL/glew.h>
+#include <glad/gl.h>
 #include <boost/make_shared.hpp>
 #include <boost/optional.hpp>
 #include <boost/property_tree/ptree.hpp>

@@ -28,7 +28,7 @@
 #include <future>
 
 #ifdef WIN32
-#include <GL/glew.h>
+#include <glad/gl.h>
 #endif
 
 namespace caspar { namespace accelerator { namespace ogl {

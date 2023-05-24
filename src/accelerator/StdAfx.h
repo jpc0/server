@@ -1,4 +1,4 @@
-#include <GL/glew.h>
+#include <glad/gl.h>
 #include <SFML/Window/Context.hpp>
 #include <algorithm>
 #include <array>

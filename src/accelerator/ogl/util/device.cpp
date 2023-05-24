@@ -31,13 +31,13 @@
 #include <common/gl/gl_check.h>
 #include <common/os/thread.h>
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 
 #include <SFML/Window/Context.hpp>
 
 #ifdef WIN32
 #include "../../d3d/d3d_device.h"
-#include <GL/wglew.h>
+#include <glad/wgl.h>
 #endif
 
 #include <boost/asio/deadline_timer.hpp>
@@ -90,14 +90,19 @@ struct device::impl : public std::enable_shared_from_this<impl>
         CASPAR_LOG(info) << L"Initializing OpenGL Device.";
 
         device_.setActive(true);
-
-        if (glewInit() != GLEW_OK) {
-            CASPAR_THROW_EXCEPTION(gl::ogl_exception() << msg_info("Failed to initialize GLEW."));
+        int _version = gladLoaderLoadGL();
+        if (_version == 0) {
+            CASPAR_THROW_EXCEPTION(gl::ogl_exception() << msg_info("Failed to initialize GLAD."));
         }
 
+
+
 #ifdef WIN32
-        if (wglewInit() != GLEW_OK) {
-            CASPAR_THROW_EXCEPTION(gl::ogl_exception() << msg_info("Failed to initialize GLEW."));
+        auto hdc = CreateCompatibleDC(NULL);
+        _version = gladLoaderLoadWGL(hdc);
+
+        if (_version == 0) {
+            CASPAR_THROW_EXCEPTION(gl::ogl_exception() << msg_info("Failed to initialize GLAD."));
         }
 #endif
 
@@ -105,9 +110,9 @@ struct device::impl : public std::enable_shared_from_this<impl>
                    u16(reinterpret_cast<const char*>(GL2(glGetString(GL_VENDOR))));
 
         CASPAR_LOG(info) << L"Initialized OpenGL " << version();
-
-        if (!GLEW_VERSION_4_5 && !glewIsSupported("GL_ARB_sync GL_ARB_shader_objects GL_ARB_multitexture "
-                                                  "GL_ARB_direct_state_access GL_ARB_texture_barrier")) {
+        if (!(GLAD_VERSION_MAJOR(_version) >= 5 && GLAD_VERSION_MINOR(_version) >= 4) &&
+            !(GLAD_GL_ARB_sync && GLAD_GL_ARB_shader_objects && GLAD_GL_ARB_multitexture &&
+              GLAD_GL_ARB_direct_state_access && GLAD_GL_ARB_texture_barrier)) {
             CASPAR_THROW_EXCEPTION(not_supported()
                                    << msg_info("Your graphics card does not meet the minimum hardware requirements "
                                                "since it does not support OpenGL 4.5 or higher."));

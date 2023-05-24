@@ -35,7 +35,7 @@
 #include <boost/algorithm/cxx11/all_of.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 
 #include <array>
 #include <cmath>

@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 #include <memory>
 #include <string>
 #include <type_traits>

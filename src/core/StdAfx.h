@@ -19,7 +19,7 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 #include <SFML/Graphics.hpp>
 #include <algorithm>
 #include <atomic>

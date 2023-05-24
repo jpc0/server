@@ -36,7 +36,6 @@ include_directories(../..)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${BOOST_INCLUDE_PATH})
 include_directories(${TBB_INCLUDE_PATH})
-include_directories(${GLEW_INCLUDE_PATH})
 include_directories(${SFML_INCLUDE_PATH})
 include_directories(${FFMPEG_INCLUDE_PATH})
 
@@ -44,7 +43,7 @@ set_target_properties(screen PROPERTIES FOLDER modules)
 source_group(sources\\consumer consumer/*)
 source_group(sources ./*)
 
-target_link_libraries(screen common core accelerator ffmpeg)
+target_link_libraries(screen common core accelerator ffmpeg glad)
 
 casparcg_add_include_statement("modules/screen/screen.h")
 casparcg_add_init_statement("screen::init" "screen")

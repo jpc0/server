@@ -13,8 +13,8 @@
 
 #include <d3d11_1.h>
 
-#include <GL/glew.h>
-#include <GL/wglew.h>
+#include <glad/gl.h>
+#include <glad/wgl.h>
 
 #include <atlcomcli.h>
 #include <mutex>
@@ -154,7 +154,7 @@ std::shared_ptr<d3d_texture2d> d3d_device::open_shared_texture(void* handle)
 const std::shared_ptr<d3d_device>& d3d_device::get_device()
 {
     static std::shared_ptr<d3d_device> device = []() -> std::shared_ptr<d3d_device> {
-        if (!WGLEW_NV_DX_interop2) {
+        if (!GLAD_WGL_NV_DX_interop2) {
             // Device doesn't support the extension, so skip
             return nullptr;
         }

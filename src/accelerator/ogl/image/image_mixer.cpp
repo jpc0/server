@@ -36,7 +36,7 @@
 #include <core/frame/pixel_format.h>
 #include <core/video_format.h>
 
-#include <GL/glew.h>
+#include <glad/gl.h>
 
 #ifdef WIN32
 #include "../../d3d/d3d_texture2d.h"
