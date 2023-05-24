@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.10)
-project (glad)
+project (glad C)
 
 
 add_library(glad 
