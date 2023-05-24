@@ -40,6 +40,14 @@ include_directories(${SFML_INCLUDE_PATH})
 include_directories(${FFMPEG_INCLUDE_PATH})
 
 set_target_properties(screen PROPERTIES FOLDER modules)
+target_compile_features(screen PRIVATE cxx_std_14)
+set_target_properties(screen PROPERTIES CXX_EXTENSIONS OFF)
+
+IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+target_compile_options(protocol -Wno-terminate)
+ENDIF
+
+
 source_group(sources\\consumer consumer/*)
 source_group(sources ./*)
 
