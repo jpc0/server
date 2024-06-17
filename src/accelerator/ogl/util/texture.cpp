@@ -29,7 +29,7 @@
 
 namespace caspar { namespace accelerator { namespace ogl {
 
-static GLenum FORMAT[]             = {0, GL_RED, GL_RG, GL_BGR, GL_BGRA};
+static GLenum FORMAT[]             = {0, GL_RED, GL_RG, GL_RGBA, GL_RGBA};
 static GLenum INTERNAL_FORMAT[][5] = {{0, GL_R8, GL_RG8, GL_RGB8, GL_RGBA8}, {0, GL_R16, GL_RG16, GL_RGB16, GL_RGBA16}};
 static GLenum TYPE[][5] = {{0, GL_UNSIGNED_BYTE, GL_UNSIGNED_BYTE, GL_UNSIGNED_BYTE, GL_UNSIGNED_INT_8_8_8_8_REV},
                            {0, GL_UNSIGNED_SHORT, GL_UNSIGNED_SHORT, GL_UNSIGNED_SHORT, GL_UNSIGNED_SHORT}};
