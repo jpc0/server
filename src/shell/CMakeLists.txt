@@ -61,14 +61,13 @@ if (MSVC)
 		OpenGL32.lib
 		glew32.lib
 		openal32.lib
-		zlibstatic.lib
 		debug sfml-graphics-d.lib
 		debug sfml-window-d.lib
 		debug sfml-system-d.lib
 		optimized sfml-graphics.lib
 		optimized sfml-window.lib
 		optimized sfml-system.lib
-		
+
 		avformat.lib
 		avcodec.lib
 		avutil.lib
@@ -105,7 +104,7 @@ if (MSVC)
 		get_filename_component(FOLDER_NAME "${FILE_TO_COPY}" NAME)
 		add_custom_command(
 			TARGET casparcg_copy_dependencies
-			POST_BUILD 
+			POST_BUILD
 			COMMAND if $(ConfigurationName) == Debug (
 				echo \"Copy Debug ${FILE_TO_COPY}\" &&
 				${CMAKE_COMMAND} -E copy \"${FILE_TO_COPY}\" \"${OUTPUT_FOLDER}/\" &&
@@ -117,7 +116,7 @@ if (MSVC)
 		get_filename_component(FOLDER_NAME "${FILE_TO_COPY}" NAME)
 		add_custom_command(
 			TARGET casparcg_copy_dependencies
-			POST_BUILD 
+			POST_BUILD
 			COMMAND if $(ConfigurationName) NEQ Debug (
 				echo \"Copy Release ${FILE_TO_COPY}\" &&
 				${CMAKE_COMMAND} -E copy \"${FILE_TO_COPY}\" \"${OUTPUT_FOLDER}/\" &&
@@ -130,7 +129,7 @@ if (MSVC)
 		get_filename_component(FOLDER_NAME "${FILE_TO_COPY}" NAME)
 		add_custom_command(
 			TARGET casparcg_copy_dependencies
-			POST_BUILD 
+			POST_BUILD
 			COMMAND if $(ConfigurationName) == Debug (
 				echo \"Copy Debug ${FILE_TO_COPY}\" &&
 				${CMAKE_COMMAND} -E copy_directory \"${FILE_TO_COPY}\" \"${OUTPUT_FOLDER}/${FOLDER_NAME}/\" &&
@@ -142,7 +141,7 @@ if (MSVC)
 		get_filename_component(FOLDER_NAME "${FILE_TO_COPY}" NAME)
 		add_custom_command(
 			TARGET casparcg_copy_dependencies
-			POST_BUILD 
+			POST_BUILD
 			COMMAND if $(ConfigurationName) NEQ Debug (
 				echo \"Copy Release ${FILE_TO_COPY}\" &&
 				${CMAKE_COMMAND} -E copy_directory \"${FILE_TO_COPY}\" \"${OUTPUT_FOLDER}/${FOLDER_NAME}/\" &&

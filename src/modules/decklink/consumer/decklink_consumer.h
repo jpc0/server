@@ -30,6 +30,7 @@
 
 #include <string>
 #include <vector>
+#include <comdef.h>
 
 namespace caspar { namespace decklink {
 
