@@ -25,7 +25,7 @@ set(HEADERS
 )
 
 casparcg_add_module_project(flash
-	SOURCES ${SOURCES} ${HEADERS} 
+	SOURCES ${SOURCES} ${HEADERS}
 	INIT_FUNCTION "flash::init"
 )
 target_include_directories(flash PRIVATE
@@ -34,6 +34,7 @@ target_include_directories(flash PRIVATE
     ${ZLIB_INCLUDE_PATH}
     )
 target_precompile_headers(flash PRIVATE "StdAfx.h")
+target_link_libraries(flash zlibstatic.lib)
 
 set_target_properties(flash PROPERTIES FOLDER modules)
 source_group(sources\\interop interop/*)
