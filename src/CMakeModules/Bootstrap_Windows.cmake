@@ -49,8 +49,8 @@ if (BOOST_USE_PRECOMPILED)
 else ()
 	set(BOOST_INSTALL_DIR ${CMAKE_CURRENT_BINARY_DIR}/boost-install)
 	ExternalProject_Add(boost
-	URL ${CASPARCG_DOWNLOAD_MIRROR}/boost/boost_1_67_0.zip
-	URL_HASH MD5=6da1ba65f8d33b1d306616e5acd87f67
+    URL ${CASPARCG_DOWNLOAD_MIRROR}/boost/boost_1_67_0.zip
+    URL_HASH MD5=6da1ba65f8d33b1d306616e5acd87f67
 	DOWNLOAD_DIR ${CASPARCG_DOWNLOAD_CACHE}
 	BUILD_IN_SOURCE 1
 	CONFIGURE_COMMAND ./bootstrap.bat
@@ -61,7 +61,7 @@ else ()
 		--with-libraries=regex
 		--with-libraries=system
 		--with-libraries=thread
-	BUILD_COMMAND ./b2 install debug release --prefix=${BOOST_INSTALL_DIR} link=static threading=multi runtime-link=shared -j ${CONFIG_CPU_COUNT} 
+	BUILD_COMMAND ./b2 install debug release --prefix=${BOOST_INSTALL_DIR} link=static threading=multi runtime-link=shared -j ${CONFIG_CPU_COUNT}
 	INSTALL_COMMAND ""
 	)
 	set(BOOST_INCLUDE_PATH "${BOOST_INSTALL_DIR}/include/boost-1_67")
@@ -178,12 +178,17 @@ ExternalProject_Add(zlib
 	URL ${CASPARCG_DOWNLOAD_MIRROR}/zlib/zlib-1.3.tar.gz
 	URL_HASH MD5=60373b133d630f74f4a1f94c1185a53f
 	DOWNLOAD_DIR ${CASPARCG_DOWNLOAD_CACHE}
+    CMAKE_ARGS "-DCMAKE_BUILD_TYPE=Release"
 	INSTALL_COMMAND ""
 )
 ExternalProject_Get_Property(zlib SOURCE_DIR)
 ExternalProject_Get_Property(zlib BINARY_DIR)
 set(ZLIB_INCLUDE_PATH "${SOURCE_DIR};${BINARY_DIR}")
-link_directories(${BINARY_DIR}/Release)
+if (CMAKE_GENERATOR STREQUAL "Ninja")
+    link_directories(${BINARY_DIR})
+else()
+    link_directories(${BINARY_DIR}/Release)
+endif()
 
 # OPENAL
 casparcg_add_external_project(openal)
@@ -245,7 +250,7 @@ if (ENABLE_HTML)
 	casparcg_add_runtime_dependency("${CEF_RESOURCE_PATH}/chrome_200_percent.pak")
 	casparcg_add_runtime_dependency("${CEF_RESOURCE_PATH}/resources.pak")
 	casparcg_add_runtime_dependency("${CEF_RESOURCE_PATH}/icudtl.dat")
-	
+
 	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/snapshot_blob.bin")
 	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/v8_context_snapshot.bin")
 	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/libcef.dll")
