@@ -399,7 +399,7 @@ struct screen_consumer
 
             GL(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, frame.pbo));
             GL(glTextureSubImage2D(
-                frame.tex, 0, 0, 0, format_desc_.width, format_desc_.height, GL_BGRA, GL_UNSIGNED_BYTE, nullptr));
+                frame.tex, 0, 0, 0, format_desc_.width, format_desc_.height, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
             GL(glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0));
 
             frame.fence = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
