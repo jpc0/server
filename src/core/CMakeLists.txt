@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.16)
-project (core)
+project (core LANGUAGES CXX)
 
 set(SOURCES
 		consumer/frame_consumer.cpp
@@ -81,7 +81,20 @@ set(HEADERS
 casparcg_add_library(core SOURCES ${SOURCES} ${HEADERS})
 target_include_directories(core PRIVATE ..)
 target_precompile_headers(core PRIVATE StdAfx.h)
-target_link_libraries(core PRIVATE common GLEW::glew sfml-graphics)
+target_link_libraries(core
+    PRIVATE
+        common
+        GLEW::glew
+        SFML::Window
+        SFML::Graphics
+        Boost::algorithm
+        Boost::circular_buffer
+        Boost::filesystem
+        Boost::lexical_cast
+        Boost::rational
+        Boost::variant
+        Boost::signals2
+)
 
 source_group(sources ./*)
 source_group(sources\\consumer consumer/*)

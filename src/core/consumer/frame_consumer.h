@@ -24,7 +24,7 @@
 #include "../fwd.h"
 #include "../monitor/monitor.h"
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 #include <common/memory.h>
 
 #include <common/future.h>

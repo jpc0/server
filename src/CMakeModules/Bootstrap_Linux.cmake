@@ -27,16 +27,12 @@ IF (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 ENDIF ()
 MARK_AS_ADVANCED (CMAKE_INSTALL_PREFIX)
 
-if (USE_STATIC_BOOST)
-	SET (Boost_USE_STATIC_LIBS ON)
-endif()
-find_package(Boost 1.74.0 COMPONENTS system thread filesystem log_setup log locale regex date_time coroutine REQUIRED)
 find_package(FFmpeg REQUIRED)
 find_package(OpenGL REQUIRED COMPONENTS OpenGL GLX EGL)
 find_package(GLEW REQUIRED)
 find_package(TBB REQUIRED)
 find_package(OpenAL REQUIRED)
-find_package(SFML 2 COMPONENTS graphics window REQUIRED)
+find_package(SFML 3 COMPONENTS Graphics Window REQUIRED)
 find_package(X11 REQUIRED)
 
 # support for Ubuntu 22.04
@@ -101,7 +97,6 @@ if (ENABLE_HTML)
     endif()
 endif ()
 
-SET (BOOST_INCLUDE_PATH "${Boost_INCLUDE_DIRS}")
 SET (FFMPEG_INCLUDE_PATH "${FFMPEG_INCLUDE_DIRS}")
 
 LINK_DIRECTORIES("${FFMPEG_LIBRARY_DIRS}")
@@ -119,10 +114,6 @@ ADD_DEFINITIONS (-DTBB_USE_CAPTURED_EXCEPTION=1)
 ADD_DEFINITIONS (-DNDEBUG) # Needed for precompiled headers to work
 ADD_DEFINITIONS (-DBOOST_LOCALE_HIDE_AUTO_PTR) # Needed for C++17 in boost 1.67+
 
-
-if (NOT USE_STATIC_BOOST)
-	ADD_DEFINITIONS (-DBOOST_ALL_DYN_LINK)
-endif()
 
 IF (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
 	ADD_COMPILE_OPTIONS (-O3) # Needed for precompiled headers to work
@@ -144,7 +135,8 @@ ADD_COMPILE_OPTIONS (-fnon-call-exceptions) # Allow signal handler to throw exce
 
 ADD_COMPILE_OPTIONS (-Wno-deprecated-declarations -Wno-write-strings -Wno-multichar -Wno-cpp -Werror)
 IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    ADD_COMPILE_OPTIONS (-Wno-terminate)
+    add_compile_options(-Wno-aggressive-loop-optimizations)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-terminate -Wno-psabi" )
 ELSEIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # Help TBB figure out what compiler support for c++11 features
     # https://github.com/01org/tbb/issues/22

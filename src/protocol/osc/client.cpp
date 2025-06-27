@@ -26,6 +26,7 @@
 
 #include "oscpack/OscOutboundPacketStream.h"
 
+#include <boost/asio/io_context.hpp>
 #include <common/endian.h>
 #include <common/utf.h>
 
@@ -81,7 +82,7 @@ struct client::impl : public spl::enable_shared_from_this<client::impl>
     std::thread       thread_;
 
   public:
-    impl(std::shared_ptr<boost::asio::io_service> service)
+    impl(std::shared_ptr<boost::asio::io_context> service)
         : service_(std::move(service))
         , socket_(*service_, udp::v4())
         , buffer_(1000000)

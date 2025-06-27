@@ -5,7 +5,7 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 
 #include <core/mixer/image/image_mixer.h>
 

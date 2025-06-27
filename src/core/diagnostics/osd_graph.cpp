@@ -20,6 +20,8 @@
  */
 
 #include "../StdAfx.h"
+#include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 #include "osd_graph.h"
 
@@ -59,10 +61,10 @@ sf::Color get_sfml_color(int color)
 {
     auto c = caspar::diagnostics::color(color);
 
-    return {static_cast<sf::Uint8>(color >> 24 & 255),
-            static_cast<sf::Uint8>(color >> 16 & 255),
-            static_cast<sf::Uint8>(color >> 8 & 255),
-            static_cast<sf::Uint8>(color >> 0 & 255)};
+    return {static_cast<std::uint8_t>(color >> 24 & 255),
+            static_cast<std::uint8_t>(color >> 16 & 255),
+            static_cast<std::uint8_t>(color >> 8 & 255),
+            static_cast<std::uint8_t>(color >> 0 & 255)};
 }
 
 auto& get_default_font()
@@ -81,7 +83,7 @@ auto& get_default_font()
         }
 #endif
         sf::Font font;
-        if (!font.loadFromFile(path.string()))
+        if (!font.openFromFile(path.string()))
             CASPAR_THROW_EXCEPTION(file_not_found() << msg_info(DIAG_FONT_PATH " not found"));
         return font;
     }();
@@ -138,12 +140,13 @@ class context : public drawable
 
     void do_show(bool value)
     {
+        sf::VideoMode s{};
         if (value) {
             if (!window_) {
                 window_.reset(
-                    new sf::RenderWindow(sf::VideoMode(RENDERING_WIDTH, RENDERING_WIDTH), "CasparCG Diagnostics"));
+                    new sf::RenderWindow(sf::VideoMode({RENDERING_WIDTH, RENDERING_WIDTH}), "CasparCG Diagnostics"));
                 window_->setPosition(sf::Vector2i(0, 0));
-                window_->setActive();
+                [[maybe_unused]] auto active = window_->setActive();
                 window_->setVerticalSyncEnabled(true);
                 calculate_view_ = true;
                 glEnable(GL_BLEND);
@@ -162,53 +165,52 @@ class context : public drawable
         if (!window_)
             return;
 
-        sf::Event e;
-        while (window_->pollEvent(e)) {
-            switch (e.type) {
-                case sf::Event::Closed:
+        while (auto opt_event = window_->pollEvent()) {
+            if (!opt_event.has_value()) {
+                break;
+            }
+            sf::Event& e = opt_event.value();
+            e.visit([&](auto&& event) {
+                using T = std::remove_reference<decltype(event)>;
+                if constexpr (std::is_same_v<sf::Event::Closed, T>) {
                     window_.reset();
                     return;
-                case sf::Event::Resized:
+                }
+                if constexpr (std::is_same_v<sf::Event::Resized, T>) {
                     calculate_view_ = true;
-                    break;
-                case sf::Event::MouseButtonPressed:
+                } else if constexpr (std::is_same_v<sf::Event::MouseButtonPressed, T>) {
                     dragging_     = true;
-                    last_mouse_y_ = e.mouseButton.y;
-                    break;
-                case sf::Event::MouseButtonReleased:
+                    last_mouse_y_ = event.mouseButton.y;
+                } else if constexpr (std::is_same_v<sf::Event::MouseButtonReleased, T>) {
                     dragging_ = false;
-                    break;
-                case sf::Event::MouseMoved:
+                } else if constexpr (std::is_same_v<sf::Event::MouseMoved, T>) {
                     if (dragging_) {
-                        auto delta_y = e.mouseMove.y - last_mouse_y_;
+                        auto delta_y = event.mouseMove.y - last_mouse_y_;
                         scroll_position_ += delta_y;
-                        last_mouse_y_   = e.mouseMove.y;
+                        last_mouse_y_   = event.mouseMove.y;
                         calculate_view_ = true;
                     }
-
-                    break;
-                case sf::Event::MouseWheelMoved:
-                    scroll_position_ += e.mouseWheel.delta * 15;
+                } else if constexpr (std::is_same_v<sf::Event::MouseWheelScrolled, T>) {
+                    scroll_position_ += event.mouseWheel.delta * 15;
                     calculate_view_ = true;
-                    break;
-                default:
-                    break;
-            }
+                }
+            });
         }
 
         window_->clear();
 
         if (calculate_view_) {
-            int content_height      = static_cast<int>(RENDERING_HEIGHT * drawables_.size());
-            int window_height       = static_cast<int>(window_->getSize().y);
-            int not_visible         = std::max(0, content_height - window_height);
-            int min_scroll_position = -not_visible;
-            int max_scroll_position = 0;
+            auto content_height      = static_cast<float>(RENDERING_HEIGHT * drawables_.size());
+            auto window_height       = static_cast<float>(window_->getSize().y);
+            int  not_visible         = std::max(0.0F, content_height - window_height);
+            int  min_scroll_position = -not_visible;
+            int  max_scroll_position = 0;
 
             scroll_position_ = std::min(max_scroll_position, std::max(min_scroll_position, scroll_position_));
-            view_.setViewport(sf::FloatRect(0, 0, 1.0, 1.0));
-            view_.setSize(RENDERING_WIDTH, window_height);
-            view_.setCenter(RENDERING_WIDTH / 2, window_height / 2 - scroll_position_);
+            sf::FloatRect a;
+            view_.setViewport(sf::FloatRect({0, 0}, {1.0, 1.0}));
+            view_.setSize({RENDERING_WIDTH, window_height});
+            view_.setCenter({RENDERING_WIDTH / 2.0F, window_height / 2.0F - scroll_position_});
             window_->setView(view_);
 
             calculate_view_ = false;
@@ -234,7 +236,7 @@ class context : public drawable
             auto drawable = it->lock();
             if (drawable) {
                 float target_y = n * RENDERING_HEIGHT;
-                drawable->setPosition(0.0f, target_y);
+                drawable->setPosition({0.0f, target_y});
                 target.draw(*drawable, states);
                 ++it;
             } else
@@ -320,14 +322,17 @@ class line : public drawable
 
         auto color = get_sfml_color(color_);
         color.a    = 255 * 0.8;
-        line_data_.push_back(sf::Vertex(
-            sf::Vector2f(get_insertion_xcoord(), std::max(0.1f, std::min(0.9f, (1.0f - tick_data_) * 0.8f + 0.1f))),
-            color));
+        sf::Vertex a;
+        line_data_.push_back(sf::Vertex{sf::Vector2f{static_cast<float>(get_insertion_xcoord()),
+                                                     std::max(0.1f, std::min(0.9f, (1.0f - tick_data_) * 0.8f + 0.1f))},
+                                        color});
 
         if (tick_tag_) {
-            sf::VertexArray vertical_dash(sf::LinesStrip);
-            vertical_dash.append(sf::Vertex(sf::Vector2f(get_insertion_xcoord() - x_delta_, 0.f), color));
-            vertical_dash.append(sf::Vertex(sf::Vector2f(get_insertion_xcoord() - x_delta_, 1.f), color));
+            sf::VertexArray vertical_dash(sf::PrimitiveType::LineStrip);
+            vertical_dash.append(
+                sf::Vertex{sf::Vector2f{static_cast<float>(get_insertion_xcoord() - x_delta_), 0.f}, color});
+            vertical_dash.append(
+                sf::Vertex{sf::Vector2f{static_cast<float>(get_insertion_xcoord() - x_delta_), 1.f}, color});
             line_tags_.push_back(vertical_dash);
         } else
             line_tags_.push_back({});
@@ -339,12 +344,14 @@ class line : public drawable
             auto array_two = line_data_.array_two();
             // since boost::circular_buffer guarantees two contiguous views of the buffer we can provide raw access to
             // SFML, which can use glDrawArrays.
-            target.draw(array_one.first, static_cast<unsigned int>(array_one.second), sf::LinesStrip, states);
-            target.draw(array_two.first, static_cast<unsigned int>(array_two.second), sf::LinesStrip, states);
+            target.draw(
+                array_one.first, static_cast<unsigned int>(array_one.second), sf::PrimitiveType::LineStrip, states);
+            target.draw(
+                array_two.first, static_cast<unsigned int>(array_two.second), sf::PrimitiveType::LineStrip, states);
 
             if (array_one.second > 0 && array_two.second > 0) {
                 // Connect the gap between the arrays
-                sf::VertexArray connecting_line(sf::LinesStrip);
+                sf::VertexArray connecting_line(sf::PrimitiveType::LineStrip);
                 connecting_line.append(*(array_one.first + array_one.second - 1));
                 connecting_line.append(*array_two.first);
                 target.draw(connecting_line, states);
@@ -424,9 +431,9 @@ struct graph
             auto_reset = auto_reset_;
         }
 
-        sf::Text text(text_str.c_str(), get_default_font(), text_size);
+        sf::Text text(get_default_font(), text_str.c_str(), text_size);
         text.setStyle(sf::Text::Italic);
-        text.move(text_margin, text_margin);
+        text.move({text_margin, text_margin});
 
         target.draw(text, states);
 
@@ -436,9 +443,9 @@ struct graph
             if (context_.layer != -1)
                 ctx_str += "-" + std::to_string(context_.layer);
 
-            sf::Text context_text(ctx_str, get_default_font(), text_size);
+            sf::Text context_text(get_default_font(), ctx_str, text_size);
             context_text.setStyle(sf::Text::Italic);
-            context_text.move(RENDERING_WIDTH - text_margin - 5 - context_text.getLocalBounds().width, text_margin);
+            context_text.move({RENDERING_WIDTH - text_margin - 5 - context_text.getLocalBounds().size.x, text_margin});
 
             target.draw(context_text, states);
         }
@@ -446,44 +453,44 @@ struct graph
         float x_offset = text_margin;
 
         for (auto it = lines_.begin(); it != lines_.end(); ++it) {
-            sf::Text line_text(it->first, get_default_font(), text_size);
-            line_text.setPosition(x_offset, text_margin + text_offset / 2);
-            line_text.setColor(get_sfml_color(it->second.get_color()));
+            sf::Text line_text(get_default_font(), it->first, text_size);
+            line_text.setPosition({x_offset, text_margin + text_offset / 2.0F});
+            line_text.setFillColor(get_sfml_color(it->second.get_color()));
             target.draw(line_text, states);
-            x_offset += line_text.getLocalBounds().width + text_margin * 2;
+            x_offset += line_text.getLocalBounds().size.x + text_margin * 2;
         }
 
         static const auto rect = []() {
             sf::RectangleShape r(sf::Vector2f(RENDERING_WIDTH, RENDERING_HEIGHT - 2));
             r.setFillColor(sf::Color(255, 255, 255, 51));
             r.setOutlineThickness(0.00f);
-            r.move(0, 1);
+            r.move({0, 1});
             return r;
         }();
         target.draw(rect, states);
 
-        states.transform.translate(0, text_offset)
-            .scale(RENDERING_WIDTH,
-                   RENDERING_HEIGHT *
-                       (static_cast<float>(RENDERING_HEIGHT - text_offset) / static_cast<float>(RENDERING_HEIGHT)));
+        states.transform.translate({0, text_offset})
+            .scale({RENDERING_WIDTH,
+                    RENDERING_HEIGHT *
+                        (static_cast<float>(RENDERING_HEIGHT - text_offset) / static_cast<float>(RENDERING_HEIGHT))});
 
         static const sf::Color       guide_color(255, 255, 255, 127);
         static const sf::VertexArray middle_guide = []() {
-            sf::VertexArray result(sf::LinesStrip);
-            result.append(sf::Vertex(sf::Vector2f(0.0f, 0.5f), guide_color));
-            result.append(sf::Vertex(sf::Vector2f(1.0f, 0.5f), guide_color));
+            sf::VertexArray result(sf::PrimitiveType::LineStrip);
+            result.append(sf::Vertex{sf::Vector2f(0.0f, 0.5f), guide_color});
+            result.append(sf::Vertex{sf::Vector2f(1.0f, 0.5f), guide_color});
             return result;
         }();
         static const sf::VertexArray bottom_guide = []() {
-            sf::VertexArray result(sf::LinesStrip);
-            result.append(sf::Vertex(sf::Vector2f(0.0f, 0.9f), guide_color));
-            result.append(sf::Vertex(sf::Vector2f(1.0f, 0.9f), guide_color));
+            sf::VertexArray result(sf::PrimitiveType::LineStrip);
+            result.append(sf::Vertex{sf::Vector2f(0.0f, 0.9f), guide_color});
+            result.append(sf::Vertex{sf::Vector2f(1.0f, 0.9f), guide_color});
             return result;
         }();
         static const sf::VertexArray top_guide = []() {
-            sf::VertexArray result(sf::LinesStrip);
-            result.append(sf::Vertex(sf::Vector2f(0.0f, 0.1f), guide_color));
-            result.append(sf::Vertex(sf::Vector2f(1.0f, 0.1f), guide_color));
+            sf::VertexArray result(sf::PrimitiveType::LineStrip);
+            result.append(sf::Vertex{sf::Vector2f(0.0f, 0.1f), guide_color});
+            result.append(sf::Vertex{sf::Vector2f(1.0f, 0.1f), guide_color});
             return result;
         }();
 

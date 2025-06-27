@@ -1,6 +1,6 @@
 #pragma once
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 
 #include <core/frame/pixel_format.h>
 #include <core/mixer/mixer.h>

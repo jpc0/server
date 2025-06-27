@@ -73,4 +73,14 @@ source_group(sources\\osc osc/*)
 source_group(sources\\util util/*)
 source_group(sources ./*)
 
-target_link_libraries(protocol PRIVATE common core)
+target_link_libraries(protocol
+    PRIVATE
+        common
+        core
+        Boost::asio
+        Boost::filesystem
+        Boost::log
+        Boost::stacktrace
+        Boost::rational
+        Boost::signals2
+)

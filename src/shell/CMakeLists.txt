@@ -54,6 +54,10 @@ target_link_libraries(casparcg
 		TBB::tbb
 		TBB::tbbmalloc
 		GLEW::glew
+        Boost::rational
+        Boost::signals2
+        Boost::asio
+        Boost::format
 )
 
 if (MSVC)

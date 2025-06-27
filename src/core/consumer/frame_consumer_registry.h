@@ -25,7 +25,7 @@
 #include "../monitor/monitor.h"
 #include "channel_info.h"
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 #include <common/memory.h>
 
 #include <core/video_format.h>

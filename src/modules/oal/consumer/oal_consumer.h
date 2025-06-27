@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 #include <common/memory.h>
 
 #include <core/fwd.h>

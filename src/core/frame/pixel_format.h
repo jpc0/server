@@ -23,7 +23,7 @@
 
 #include <vector>
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 
 namespace caspar { namespace core {
 

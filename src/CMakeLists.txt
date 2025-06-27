@@ -43,6 +43,7 @@ endif()
 
 cmake_host_system_information(RESULT CONFIG_CPU_COUNT QUERY NUMBER_OF_PHYSICAL_CORES)
 
+include(CPM)
 include(CasparCG_Util)
 configure_file("${PROJECT_SOURCE_DIR}/version.tmpl" "${CMAKE_BINARY_DIR}/generated/version.h")
 
@@ -57,6 +58,17 @@ else ()
     message(STATUS "Target build type: ${CMAKE_BUILD_TYPE}")
     message(STATUS "Build Version: ${CONFIG_VERSION_MAJOR}.${CONFIG_VERSION_MINOR}.${CONFIG_VERSION_BUG} ${CONFIG_VERSION_TAG} (Revision: ${CONFIG_VERSION_GIT_HASH})")
 endif ()
+
+set(BUILD_SHARED_BOOST NOT BUILD_STATIC_BOOST)
+
+CPMAddPackage(
+  NAME Boost
+  VERSION 1.88.0
+  URL https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.tar.gz
+OPTIONS "BOOST_ENABLE_CMAKE ON" "BUILD_SHARED_LIBS ${BUILD_SHARED_BOOST}" "BOOST_INCLUDE_LIBRARIES thread\\\;asio\\\;ptr_container\\\;property_tree\\\;algorithm\\\;filesystem\\\;date_time\\\;log\\\;stacktrace\\\;locale\\\;circular_buffer\\\;format\\\;lexical_cast\\\;rational\\\;variant\\\;signals2\\\;logic\\\;crc\\\;numeric/ublas" "BOOST_LOCALE_ENABLE_ICU OFF"
+  SYSTEM ON
+)
+
 
 include_directories("${CMAKE_BINARY_DIR}/generated")
 

@@ -24,6 +24,7 @@
 #include <GL/glew.h>
 #include <SFML/Window.hpp>
 
+#include <SFML/Window/WindowEnums.hpp>
 #include <common/array.h>
 #include <common/diagnostics/graph.h>
 #include <common/future.h>
@@ -152,7 +153,7 @@ struct screen_consumer
     std::atomic<bool> is_running_{true};
     std::thread       thread_;
 
-    screen_consumer(const screen_consumer&) = delete;
+    screen_consumer(const screen_consumer&)            = delete;
     screen_consumer& operator=(const screen_consumer&) = delete;
 
   public:
@@ -228,19 +229,23 @@ struct screen_consumer
 
         thread_ = std::thread([this] {
             try {
-                const auto    window_style = config_.borderless ? sf::Style::None
-                                             : config_.windowed ? sf::Style::Resize | sf::Style::Close
-                                                                : sf::Style::Fullscreen;
+                uint32_t window_style = sf::Style::None;
+                if (config_.windowed) {
+                    window_style = sf::Style::Resize | sf::Style::Close;
+                }
+                const auto    window_state = config_.windowed ? sf::State::Windowed : sf::State::Fullscreen;
                 sf::VideoMode desktop      = sf::VideoMode::getDesktopMode();
-                sf::VideoMode mode(
-                    config_.sbs_key ? screen_width_ * 2 : screen_width_, screen_height_, desktop.bitsPerPixel);
+                sf::VideoMode mode({static_cast<unsigned int>(config_.sbs_key ? screen_width_ * 2 : screen_width_),
+                                    static_cast<unsigned int>(screen_height_)},
+                                   desktop.bitsPerPixel);
                 window_.create(mode,
                                u8(print()),
                                window_style,
-                               sf::ContextSettings(0, 0, 0, 4, 5, sf::ContextSettings::Attribute::Core));
+                               window_state,
+                               sf::ContextSettings{0, 0, 0, 4, 5, sf::ContextSettings::Attribute::Core});
                 window_.setPosition(sf::Vector2i(screen_x_, screen_y_));
                 window_.setMouseCursorVisible(config_.interactive);
-                window_.setActive(true);
+                [[maybe_unused]] auto active = window_.setActive(true);
 
                 if (config_.always_on_top) {
 #ifdef _MSC_VER
@@ -359,13 +364,16 @@ struct screen_consumer
 
     bool poll()
     {
-        int       count = 0;
-        sf::Event e;
-        while (window_.pollEvent(e)) {
+        int count = 0;
+        while (auto event_opt = window_.pollEvent()) {
+            if (!event_opt.has_value()) {
+                break;
+            }
+            auto& event = event_opt.value();
             count++;
-            if (e.type == sf::Event::Resized) {
+            if (auto* e = event.getIf<sf::Event::Resized>()) {
                 calculate_aspect();
-            } else if (e.type == sf::Event::Closed) {
+            } else if (auto* e = event.getIf<sf::Event::Closed>()) {
                 is_running_ = false;
             }
         }

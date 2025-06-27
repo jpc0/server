@@ -22,7 +22,7 @@
 
 #include "buffer.h"
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 #include <common/gl/gl_check.h>
 
 #include <GL/glew.h>

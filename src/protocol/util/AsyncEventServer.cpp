@@ -23,8 +23,10 @@
 
 #include "AsyncEventServer.h"
 
-#include <algorithm>
 #include <array>
+#include <boost/asio/dispatch.hpp>
+#include <boost/asio/execution_context.hpp>
+#include <boost/asio/io_context.hpp>
 #include <functional>
 #include <memory>
 #include <set>
@@ -49,7 +51,7 @@ class connection : public spl::enable_shared_from_this<connection>
     using send_queue         = tbb::concurrent_queue<std::string>;
 
     const spl::shared_ptr<tcp::socket>       socket_;
-    std::shared_ptr<boost::asio::io_service> service_;
+    std::shared_ptr<boost::asio::io_context> service_;
     const std::wstring                       listen_port_;
     const spl::shared_ptr<connection_set>    connection_set_;
     protocol_strategy_factory<char>::ptr     protocol_factory_;
@@ -114,7 +116,7 @@ class connection : public spl::enable_shared_from_this<connection>
     };
 
   public:
-    static spl::shared_ptr<connection> create(std::shared_ptr<boost::asio::io_service>    service,
+    static spl::shared_ptr<connection> create(std::shared_ptr<boost::asio::io_context>    service,
                                               spl::shared_ptr<tcp::socket>                socket,
                                               const protocol_strategy_factory<char>::ptr& protocol,
                                               spl::shared_ptr<connection_set>             connection_set)
@@ -143,13 +145,13 @@ class connection : public spl::enable_shared_from_this<connection>
     {
         send_queue_.push(std::move(data));
         auto self = shared_from_this();
-        service_->dispatch([=] { self->do_write(); });
+        boost::asio::dispatch(*service_, [self] { self->do_write(); });
     }
 
     void disconnect()
     {
         std::weak_ptr<connection> self = shared_from_this();
-        service_->dispatch([=] {
+        boost::asio::dispatch(*service_, [self] {
             auto strong = self.lock();
 
             if (strong)
@@ -197,7 +199,7 @@ class connection : public spl::enable_shared_from_this<connection>
         socket_->close(ec);
     }
 
-    connection(const std::shared_ptr<boost::asio::io_service>& service,
+    connection(const std::shared_ptr<boost::asio::io_context>& service,
                const spl::shared_ptr<tcp::socket>&             socket,
                const protocol_strategy_factory<char>::ptr&     protocol_factory,
                const spl::shared_ptr<connection_set>&          connection_set)
@@ -272,13 +274,13 @@ class connection : public spl::enable_shared_from_this<connection>
 
 struct AsyncEventServer::implementation : public spl::enable_shared_from_this<implementation>
 {
-    std::shared_ptr<boost::asio::io_service> service_;
+    std::shared_ptr<boost::asio::io_context> service_;
     tcp::acceptor                            acceptor_;
     protocol_strategy_factory<char>::ptr     protocol_factory_;
     spl::shared_ptr<connection_set>          connection_set_;
     std::vector<lifecycle_factory_t>         lifecycle_factories_;
 
-    implementation(std::shared_ptr<boost::asio::io_service>    service,
+    implementation(std::shared_ptr<boost::asio::io_context>    service,
                    const protocol_strategy_factory<char>::ptr& protocol,
                    unsigned short                              port)
         : service_(std::move(service))
@@ -301,7 +303,7 @@ struct AsyncEventServer::implementation : public spl::enable_shared_from_this<im
     {
         auto conns_set = connection_set_;
 
-        service_->post([conns_set] {
+        boost::asio::post(*service_, [conns_set] {
             auto connections = *conns_set;
             for (auto& connection : connections)
                 connection->stop();
@@ -346,11 +348,11 @@ struct AsyncEventServer::implementation : public spl::enable_shared_from_this<im
     void add_client_lifecycle_object_factory(const lifecycle_factory_t& factory)
     {
         auto self = shared_from_this();
-        service_->post([=] { self->lifecycle_factories_.push_back(factory); });
+        boost::asio::post(*service_, [=] { self->lifecycle_factories_.push_back(factory); });
     }
 };
 
-AsyncEventServer::AsyncEventServer(std::shared_ptr<boost::asio::io_service>    service,
+AsyncEventServer::AsyncEventServer(std::shared_ptr<boost::asio::io_context>    service,
                                    const protocol_strategy_factory<char>::ptr& protocol,
                                    unsigned short                              port)
     : impl_(new implementation(std::move(service), protocol, port))

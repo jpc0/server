@@ -29,7 +29,7 @@
 #include <boost/align/aligned_allocator.hpp>
 
 #include <common/array.h>
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 #include <common/future.h>
 #include <common/log.h>
 

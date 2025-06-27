@@ -23,7 +23,7 @@
 
 #include <accelerator/accelerator.h>
 #include <common/array.h>
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 
 #include <functional>
 #include <future>

@@ -24,7 +24,10 @@
 
 #include <accelerator/accelerator.h>
 
-#include <common/bit_depth.h>
+#include <boost/asio/executor_work_guard.hpp>
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/ip/address.hpp>
+#include <common/bit_depth.hpp>
 #include <common/env.h>
 #include <common/except.h>
 #include <common/memory.h>
@@ -65,39 +68,34 @@ namespace caspar {
 using namespace core;
 using namespace protocol;
 
-std::shared_ptr<boost::asio::io_service> create_running_io_service()
+std::shared_ptr<boost::asio::io_context> create_running_io_service()
 {
-    auto service = std::make_shared<boost::asio::io_service>();
-    // To keep the io_service::run() running although no pending async
-    // operations are posted.
-    auto work      = std::make_shared<boost::asio::io_service::work>(*service);
-    auto weak_work = std::weak_ptr<boost::asio::io_service::work>(work);
-    auto thread    = std::make_shared<std::thread>([service, weak_work] {
-        while (auto strong = weak_work.lock()) {
-            try {
-                service->run();
-            } catch (...) {
-                CASPAR_LOG_CURRENT_EXCEPTION();
-            }
+    auto service = std::make_shared<boost::asio::io_context>();
+    auto thread  = std::make_shared<std::thread>([service] {
+        try {
+            service->run();
+        } catch (...) {
+            CASPAR_LOG_CURRENT_EXCEPTION();
         }
 
         CASPAR_LOG(info) << "[asio] Global io_service uninitialized.";
     });
 
-    return std::shared_ptr<boost::asio::io_service>(service.get(), [service, work, thread](void*) mutable {
-        CASPAR_LOG(info) << "[asio] Shutting down global io_service.";
-        work.reset();
-        service->stop();
-        if (thread->get_id() != std::this_thread::get_id())
-            thread->join();
-        else
-            thread->detach();
-    });
+    return std::shared_ptr<boost::asio::io_context>(
+        service.get(), [service, thread, work = boost::asio::make_work_guard(service->get_executor())](void*) mutable {
+            CASPAR_LOG(info) << "[asio] Shutting down global io_service.";
+            work.reset();
+            service->stop();
+            if (thread->get_id() != std::this_thread::get_id())
+                thread->join();
+            else
+                thread->detach();
+        });
 }
 
 struct server::impl
 {
-    std::shared_ptr<boost::asio::io_service>               io_service_ = create_running_io_service();
+    std::shared_ptr<boost::asio::io_context>               io_service_ = create_running_io_service();
     video_format_repository                                video_format_repository_;
     accelerator::accelerator                               accelerator_;
     std::shared_ptr<amcp::amcp_command_repository>         amcp_command_repo_;
@@ -154,7 +152,7 @@ struct server::impl
 
     ~impl()
     {
-        std::weak_ptr<boost::asio::io_service> weak_io_service = io_service_;
+        std::weak_ptr<boost::asio::io_context> weak_io_service = io_service_;
         io_service_.reset();
         predefined_osc_subscriptions_.clear();
         osc_client_.reset();
@@ -321,7 +319,7 @@ struct server::impl
                 const auto port    = ptree_get<unsigned short>(predefined_client.second, L"port");
 
                 boost::system::error_code ec;
-                auto                      ipaddr = address_v4::from_string(u8(address), ec);
+                auto                      ipaddr = make_address(u8(address), ec);
                 if (!ec)
                     predefined_osc_subscriptions_.push_back(
                         osc_client_->get_subscription_token(udp::endpoint(ipaddr, port)));
@@ -335,9 +333,9 @@ struct server::impl
                 [=](const std::string& ipv4_address) -> std::pair<std::wstring, std::shared_ptr<void>> {
                     using namespace boost::asio::ip;
 
-                    return std::make_pair(std::wstring(L"osc_subscribe"),
-                                          osc_client_->get_subscription_token(
-                                              udp::endpoint(address_v4::from_string(ipv4_address), default_port)));
+                    return std::make_pair(
+                        std::wstring(L"osc_subscribe"),
+                        osc_client_->get_subscription_token(udp::endpoint(make_address(ipv4_address), default_port)));
                 });
     }
 

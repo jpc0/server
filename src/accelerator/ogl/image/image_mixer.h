@@ -22,7 +22,7 @@
 #pragma once
 
 #include <common/array.h>
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 #include <common/memory.h>
 
 #include <core/frame/frame.h>

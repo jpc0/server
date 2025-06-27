@@ -1,5 +1,4 @@
 cmake_minimum_required (VERSION 3.16)
-project (image)
 
 set(SOURCES
 		consumer/image_consumer.cpp
@@ -40,5 +39,8 @@ source_group(sources ./*)
 
 target_link_libraries(image PRIVATE
 	ffmpeg
+    Boost::lexical_cast
+    Boost::variant
+    Boost::rational
 )
 

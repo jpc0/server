@@ -26,7 +26,7 @@
 #include "../frame/frame.h"
 #include "../frame/pixel_format.h"
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 #include <common/diagnostics/graph.h>
 #include <common/except.h>
 #include <common/memory.h>

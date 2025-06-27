@@ -30,7 +30,7 @@ bool window_always_on_top(const sf::Window& window)
     if (!disp)
         return false;
 
-    Window win = window.getSystemHandle();
+    Window win = window.getNativeHandle();
 
     Atom   wm_state, wm_state_above;
     XEvent event;

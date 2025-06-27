@@ -25,7 +25,9 @@
 
 #include <string>
 #include <vector>
+#if 0
 #include <comdef.h>
+#endif
 
 namespace caspar { namespace decklink {
 

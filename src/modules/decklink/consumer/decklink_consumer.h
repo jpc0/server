@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 #include <common/memory.h>
 
 #include <core/fwd.h>
@@ -30,7 +30,9 @@
 
 #include <string>
 #include <vector>
+#if 0
 #include <comdef.h>
+#endif
 
 namespace caspar { namespace decklink {
 

@@ -22,7 +22,7 @@
 #pragma once
 
 #include "../frame/pixel_format.h"
-#include "common/bit_depth.h"
+#include "common/bit_depth.hpp"
 
 namespace caspar::core {
 

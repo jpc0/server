@@ -37,6 +37,19 @@ source_group(sources ./*)
 source_group(sources\\consumer ./consumer/.*)
 source_group(sources\\producer ./producer/.*)
 source_group(sources\\util ./util/.*)
+target_link_libraries(ffmpeg
+    PRIVATE
+        Boost::algorithm
+        Boost::filesystem
+        Boost::format
+        Boost::lexical_cast
+        Boost::rational
+        Boost::property_tree
+        Boost::log
+        Boost::signals2
+        Boost::logic
+        Boost::crc
+)
 
 if (MSVC)
 	# target_link_libraries(ffmpeg

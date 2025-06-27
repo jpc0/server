@@ -1,7 +1,7 @@
 #include "av_util.h"
 #include "av_assert.h"
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 
 #if defined(_MSC_VER)
 #pragma warning(push)

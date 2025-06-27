@@ -48,4 +48,10 @@ source_group(sources\\interop interop/*)
 source_group(sources\\util util/*)
 source_group(sources ./*)
 
-target_link_libraries(newtek PRIVATE ffmpeg)
+target_link_libraries(newtek
+    PRIVATE
+        ffmpeg
+        Boost::rational
+        Boost::format
+        Boost::signals2
+)

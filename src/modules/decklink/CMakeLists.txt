@@ -71,6 +71,14 @@ source_group(sources\\interop interop/*)
 source_group(sources\\producer producer/*)
 source_group(sources\\util util/*)
 
+target_link_libraries(decklink
+    PRIVATE
+        Boost::circular_buffer
+        Boost::rational
+        Boost::signals2
+        Boost::format
+)
+
 if (MSVC)
 	target_link_libraries(decklink PRIVATE
 			ffmpeg

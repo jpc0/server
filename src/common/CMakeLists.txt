@@ -1,5 +1,4 @@
 cmake_minimum_required (VERSION 3.16)
-project (common)
 
 set(SOURCES
 		diagnostics/graph.cpp
@@ -63,7 +62,18 @@ set(HEADERS
 casparcg_add_library(common SOURCES ${SOURCES} ${HEADERS})
 target_include_directories(common PRIVATE ..)
 target_precompile_headers(common PRIVATE stdafx.h)
-target_link_libraries(common PRIVATE GLEW::glew)
+target_link_libraries(common
+    PRIVATE
+        GLEW::glew
+    PUBLIC
+        Boost::algorithm
+        Boost::date_time
+        Boost::filesystem
+        Boost::property_tree
+        Boost::log
+        Boost::stacktrace
+        Boost::locale
+)
 
 source_group(sources ./*)
 source_group(sources\\gl gl/*)

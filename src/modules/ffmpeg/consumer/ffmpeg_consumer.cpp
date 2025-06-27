@@ -24,7 +24,7 @@
 #include "../util/av_assert.h"
 #include "../util/av_util.h"
 
-#include <common/bit_depth.h>
+#include <common/bit_depth.hpp>
 #include <common/diagnostics/graph.h>
 #include <common/env.h>
 #include <common/executor.h>
