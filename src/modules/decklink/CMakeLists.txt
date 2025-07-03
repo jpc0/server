@@ -79,6 +79,11 @@ target_link_libraries(decklink
         Boost::format
 )
 
+target_compile_options(decklink
+    PRIVATE
+        "$<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wno-psabi>"
+)
+
 if (MSVC)
 	target_link_libraries(decklink PRIVATE
 			ffmpeg
