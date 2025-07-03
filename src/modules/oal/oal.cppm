@@ -19,12 +19,16 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#pragma once
+module;
+
+#include <core/consumer/frame_consumer.h>
 
 #include <core/module_dependencies.h>
 
+export module caspar.modules.oal;
+
 namespace caspar { namespace oal {
 
-void init(const core::module_dependencies& dependencies);
+export void init(const core::module_dependencies& dependencies);
 
 }} // namespace caspar::oal

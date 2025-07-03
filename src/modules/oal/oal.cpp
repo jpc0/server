@@ -19,11 +19,13 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#include "oal.h"
-
-#include "consumer/oal_consumer.h"
+module;
 
 #include <core/consumer/frame_consumer.h>
+
+module caspar.modules.oal;
+
+import caspar.modules.oal.consumer;
 
 namespace caspar { namespace oal {
 

@@ -18,6 +18,7 @@
  *
  * Author: Robert Nagy, ronag89@gmail.com
  */
+import caspar.modules.oal;
 #include "included_modules.h"
 
 #include "server.h"
@@ -138,6 +139,9 @@ struct server::impl
         module_dependencies dependencies(
             cg_registry_, producer_registry_, consumer_registry_, amcp_command_repo_wrapper_);
         initialize_modules(dependencies);
+        oal::init(dependencies);
+        CASPAR_LOG(info) << L"Initialized oal module.";
+
         CASPAR_LOG(info) << L"Initialized modules.";
 
         setup_channel_producers_and_consumers(xml_channels);
@@ -330,7 +334,7 @@ struct server::impl
 
         if (!disable_send_to_amcp_clients && primary_amcp_server_)
             primary_amcp_server_->add_client_lifecycle_object_factory(
-                [=](const std::string& ipv4_address) -> std::pair<std::wstring, std::shared_ptr<void>> {
+                [&](const std::string& ipv4_address) -> std::pair<std::wstring, std::shared_ptr<void>> {
                     using namespace boost::asio::ip;
 
                     return std::make_pair(

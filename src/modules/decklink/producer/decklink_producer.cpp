@@ -897,7 +897,7 @@ class decklink_producer_proxy : public core::frame_producer
         , executor_(L"decklink_producer[" + std::to_wstring(device_index) + L"]")
     {
         auto ctx = core::diagnostics::call_context::for_thread();
-        executor_.invoke([=] {
+        executor_.invoke([&] {
             core::diagnostics::call_context::for_thread() = ctx;
             com_initialize();
             producer_.reset(new decklink_producer(format_desc,
@@ -914,7 +914,7 @@ class decklink_producer_proxy : public core::frame_producer
 
     ~decklink_producer_proxy() override
     {
-        executor_.invoke([=] {
+        executor_.invoke([&] {
             producer_.reset();
             com_uninitialize();
         });

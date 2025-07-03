@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.16)
+cmake_minimum_required (VERSION 3.28)
 project (shell)
 
 join_list("${CASPARCG_MODULE_INCLUDE_STATEMENTS}" "\n" CASPARCG_MODULE_INCLUDE_STATEMENTS)
@@ -39,6 +39,7 @@ target_include_directories(casparcg PRIVATE
     ..
     ${BOOST_INCLUDE_PATH}
     )
+target_compile_features(casparcg PRIVATE cxx_std_26)
 casparcg_add_build_dependencies(casparcg)
 
 source_group(sources ./*)
@@ -48,6 +49,8 @@ target_link_libraries(casparcg
 		common
 		core
 		protocol
+
+        oal
 
 		"${CASPARCG_MODULE_TARGETS}"
 

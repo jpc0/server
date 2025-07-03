@@ -1075,12 +1075,12 @@ struct decklink_consumer_proxy : public core::frame_consumer
         : config_(config)
         , executor_(L"decklink_consumer[" + std::to_wstring(config.primary.device_index) + L"]")
     {
-        executor_.begin_invoke([=] { com_initialize(); });
+        executor_.begin_invoke([&] { com_initialize(); });
     }
 
     ~decklink_consumer_proxy() override
     {
-        executor_.invoke([=] {
+        executor_.invoke([&] {
             set_thread_realtime_priority();
             consumer_.reset();
             com_uninitialize();
@@ -1092,7 +1092,7 @@ struct decklink_consumer_proxy : public core::frame_consumer
                     int                            port_index) override
     {
         format_desc_ = format_desc;
-        executor_.invoke([=] {
+        executor_.invoke([&] {
             consumer_.reset();
             consumer_ = std::make_unique<decklink_consumer>(config_, format_desc, channel_info.index);
         });
@@ -1100,7 +1100,7 @@ struct decklink_consumer_proxy : public core::frame_consumer
 
     std::future<bool> send(core::video_field field, core::const_frame frame) override
     {
-        return executor_.begin_invoke([=] { return consumer_->send(field, frame); });
+        return executor_.begin_invoke([&] { return consumer_->send(field, frame); });
     }
 
     [[nodiscard]] std::wstring print() const override
