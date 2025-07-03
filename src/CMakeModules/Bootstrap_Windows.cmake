@@ -220,58 +220,6 @@ set(TEMPLATE_HOST_PATH "${SOURCE_DIR}")
 set(LIBERATION_FONTS_BIN_PATH "${PROJECT_SOURCE_DIR}/shell/liberation-fonts")
 casparcg_add_runtime_dependency("${LIBERATION_FONTS_BIN_PATH}/LiberationMono-Regular.ttf")
 
-# CEF
-if (ENABLE_HTML)
-	casparcg_add_external_project(cef)
-	ExternalProject_Add(cef
-		URL ${CASPARCG_DOWNLOAD_MIRROR}/cef/cef_binary_131.4.1%2Bg437feba%2Bchromium-131.0.6778.265_windows64_minimal.tar.bz2
-		URL_HASH SHA1=864d40fb6e26a6ac8cf1003cbfcc16d35c90782e
-		DOWNLOAD_DIR ${CASPARCG_DOWNLOAD_CACHE}
-		CMAKE_ARGS -DUSE_SANDBOX=Off -DCEF_RUNTIME_LIBRARY_FLAG=/MD ${EXTERNAL_CMAKE_ARGS}
-		INSTALL_COMMAND ""
-	)
-	ExternalProject_Get_Property(cef SOURCE_DIR)
-	ExternalProject_Get_Property(cef BINARY_DIR)
-
-    add_library(CEF::CEF INTERFACE IMPORTED)
-	add_dependencies(CEF::CEF cef)
-    target_include_directories(CEF::CEF INTERFACE
-        "${SOURCE_DIR}"
-    )
-
-	set(CEF_RESOURCE_PATH ${SOURCE_DIR}/Resources)
-	set(CEF_BIN_PATH ${SOURCE_DIR}/Release)
-
-	if (is_multi_config)
-	    target_link_libraries(CEF::CEF INTERFACE
-			${SOURCE_DIR}/Release/libcef.lib
-			optimized ${BINARY_DIR}/libcef_dll_wrapper/Release/libcef_dll_wrapper.lib
-			debug ${BINARY_DIR}/libcef_dll_wrapper/Debug/libcef_dll_wrapper.lib)
-	else()
-		link_directories(${SOURCE_DIR}/Release ${BINARY_DIR}/libcef_dll_wrapper)
-		target_link_libraries(CEF::CEF INTERFACE
-			libcef.lib
-			libcef_dll_wrapper.lib)
-	endif()
-
-	casparcg_add_runtime_dependency_dir("${CEF_RESOURCE_PATH}/locales")
-	casparcg_add_runtime_dependency("${CEF_RESOURCE_PATH}/chrome_100_percent.pak")
-	casparcg_add_runtime_dependency("${CEF_RESOURCE_PATH}/chrome_200_percent.pak")
-	casparcg_add_runtime_dependency("${CEF_RESOURCE_PATH}/resources.pak")
-	casparcg_add_runtime_dependency("${CEF_RESOURCE_PATH}/icudtl.dat")
-
-	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/snapshot_blob.bin")
-	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/v8_context_snapshot.bin")
-	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/libcef.dll")
-	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/chrome_elf.dll")
-	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/d3dcompiler_47.dll")
-	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/libEGL.dll")
-	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/libGLESv2.dll")
-	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/vk_swiftshader.dll")
-	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/vk_swiftshader_icd.json")
-	casparcg_add_runtime_dependency("${CEF_BIN_PATH}/vulkan-1.dll")
-endif ()
-
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT casparcg)
 
@@ -288,4 +236,4 @@ string(REPLACE "/EHsc" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHa /Zi /W4 /WX /MP /fp:fast /Zm192 /FIcommon/compiler/vs/disable_silly_warnings.h")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}	/D TBB_USE_ASSERT=1 /D TBB_USE_DEBUG /bigobj")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}	/Oi /arch:AVX2 /Ot /Gy /bigobj")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}	/Oi /Ot /Gy /bigobj")
