@@ -11,9 +11,7 @@ if(POLICY CMP0167)
     cmake_policy(SET CMP0167 NEW)
 endif()
 
-set(ENABLE_HTML ON CACHE BOOL "Enable CEF and HTML producer")
 set(USE_STATIC_BOOST OFF CACHE BOOL "Use shared library version of Boost")
-set(USE_SYSTEM_CEF ON CACHE BOOL "Use the version of cef from your OS (only tested with Ubuntu)")
 set(CASPARCG_BINARY_NAME "casparcg" CACHE STRING "Custom name of the binary to build (this disables some install files)")
 
 # Determine build (target) platform
@@ -40,61 +38,6 @@ if (NOT TARGET OpenAL::OpenAL)
     target_include_directories(OpenAL::OpenAL INTERFACE ${OPENAL_INCLUDE_DIR})
     target_link_libraries(OpenAL::OpenAL INTERFACE ${OPENAL_LIBRARY})
 endif()
-
-if (ENABLE_HTML)
-    if (USE_SYSTEM_CEF)
-        set(CEF_LIB_PATH "/usr/lib/casparcg-cef-131")
-
-        add_library(CEF::CEF INTERFACE IMPORTED)
-        target_include_directories(CEF::CEF INTERFACE
-            "/usr/include/casparcg-cef-131"
-        )
-        target_link_libraries(CEF::CEF INTERFACE
-            "-Wl,-rpath,${CEF_LIB_PATH} ${CEF_LIB_PATH}/libcef.so"
-            "${CEF_LIB_PATH}/libcef_dll_wrapper.a"
-        )
-    else()
-        casparcg_add_external_project(cef)
-        ExternalProject_Add(cef
-            URL ${CASPARCG_DOWNLOAD_MIRROR}/cef/cef_binary_131.4.1%2Bg437feba%2Bchromium-131.0.6778.265_linux64_minimal.tar.bz2
-            URL_HASH SHA1=cbe52ac3c39ef93fdc5021588e12c466e801d9af
-            DOWNLOAD_DIR ${CASPARCG_DOWNLOAD_CACHE}
-            CMAKE_ARGS -DUSE_SANDBOX=Off
-            INSTALL_COMMAND ""
-            BUILD_BYPRODUCTS
-                "<SOURCE_DIR>/Release/libcef.so"
-                "<BINARY_DIR>/libcef_dll_wrapper/libcef_dll_wrapper.a"
-        )
-        ExternalProject_Get_Property(cef SOURCE_DIR)
-        ExternalProject_Get_Property(cef BINARY_DIR)
-
-        add_library(CEF::CEF INTERFACE IMPORTED)
-        target_include_directories(CEF::CEF INTERFACE
-            "${SOURCE_DIR}"
-        )
-        target_link_libraries(CEF::CEF INTERFACE
-            # Note: All of these must be referenced in the BUILD_BYPRODUCTS above, to satisfy ninja
-            "${SOURCE_DIR}/Release/libcef.so"
-            "${BINARY_DIR}/libcef_dll_wrapper/libcef_dll_wrapper.a"
-        )
-
-        install(DIRECTORY ${SOURCE_DIR}/Resources/locales TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Resources/chrome_100_percent.pak TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Resources/chrome_200_percent.pak TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Resources/icudtl.dat TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Resources/resources.pak TYPE LIB)
-
-        install(FILES ${SOURCE_DIR}/Release/chrome-sandbox TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Release/libcef.so TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Release/libEGL.so TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Release/libGLESv2.so TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Release/libvk_swiftshader.so TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Release/libvulkan.so.1 TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Release/snapshot_blob.bin TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Release/v8_context_snapshot.bin TYPE LIB)
-        install(FILES ${SOURCE_DIR}/Release/vk_swiftshader_icd.json TYPE LIB)
-    endif()
-endif ()
 
 SET (FFMPEG_INCLUDE_PATH "${FFMPEG_INCLUDE_DIRS}")
 
