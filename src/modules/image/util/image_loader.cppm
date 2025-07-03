@@ -19,22 +19,22 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#pragma once
+module;
 
-#include <common/bit_depth.hpp>
-#include <common/memory.h>
+#include <ffmpeg/util/av_util.h>
 
-#include <boost/property_tree/ptree_fwd.hpp>
-#include <core/consumer/frame_consumer.h>
-
+#include <memory>
 #include <string>
-#include <vector>
+
+#include <boost/filesystem.hpp>
+
+export module caspar.modules.image.util.loader;
 
 namespace caspar { namespace image {
 
-spl::shared_ptr<core::frame_consumer> create_consumer(const std::vector<std::wstring>&     params,
-                                                      const core::video_format_repository& format_repository,
-                                                      const std::vector<spl::shared_ptr<core::video_channel>>& channels,
-                                                      const core::channel_info& channel_info);
+export std::shared_ptr<AVFrame> load_image(const std::wstring& filename);
+export std::shared_ptr<AVFrame> load_from_memory(std::vector<unsigned char> image_data);
+
+export bool is_valid_file(const boost::filesystem::path& filename);
 
 }} // namespace caspar::image

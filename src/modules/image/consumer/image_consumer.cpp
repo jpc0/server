@@ -20,7 +20,7 @@
  * Author: Julian Waller, julian@superfly.tv
  */
 
-#include "image_consumer.h"
+module;
 
 #include <common/array.h>
 #include <common/env.h>
@@ -29,6 +29,7 @@
 
 #include <core/consumer/channel_info.h>
 #include <core/frame/frame.h>
+#include <core/consumer/frame_consumer.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -39,10 +40,6 @@
 
 #include <ffmpeg/util/av_assert.h>
 #include <ffmpeg/util/av_util.h>
-
-#include "../util/image_algorithms.h"
-#include "../util/image_converter.h"
-#include "../util/image_view.h"
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -60,6 +57,9 @@ extern "C" {
 #pragma warning(pop)
 #endif
 
+module caspar.modules.image.consumer;
+import caspar.modules.image.util;
+
 namespace caspar::image {
 
 struct image_consumer : public core::frame_consumer
@@ -71,7 +71,11 @@ struct image_consumer : public core::frame_consumer
     {
     }
 
-    void initialize(const core::video_format_desc& /*format_desc*/, const core::channel_info& channel_info, int port_index) override {}
+    void initialize(const core::video_format_desc& /*format_desc*/,
+                    const core::channel_info& channel_info,
+                    int                       port_index) override
+    {
+    }
 
     std::future<bool> send(core::video_field field, core::const_frame frame) override
     {

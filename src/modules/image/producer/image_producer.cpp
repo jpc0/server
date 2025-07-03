@@ -20,19 +20,26 @@
  * Author: Julian Waller, julian@superfly.tv
  */
 
-#include "image_producer.h"
-
-#include "../util/image_converter.h"
-#include "../util/image_loader.h"
+module;
 
 #include <common/base64.h>
 #include <common/env.h>
 #include <common/filesystem.h>
 #include <common/param.h>
 
+#include <core/producer/frame_producer.h>
+#include <core/frame/geometry.h>
+#include <core/frame/pixel_format.h>
+
 #include <boost/algorithm/string.hpp>
 
 #include <utility>
+
+#include <ffmpeg/util/av_util.h>
+
+module caspar.modules.image.producer;
+import caspar.modules.image.util.converter;
+import caspar.modules.image.util.loader;
 
 namespace caspar { namespace image {
 

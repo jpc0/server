@@ -19,12 +19,15 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#pragma once
+module;
 
 #include <core/module_dependencies.h>
 
+export module caspar.modules.image;
+export import caspar.modules.image.consumer;
+
 namespace caspar { namespace image {
 
-void init(const core::module_dependencies& dependencies);
+export void init(const core::module_dependencies& dependencies);
 
 }} // namespace caspar::image

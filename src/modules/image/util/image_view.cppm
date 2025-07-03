@@ -19,9 +19,11 @@
  * Author: Helge Norberg, helge.norberg@svt.se
  */
 
-#pragma once
+module;
 
 #include <boost/iterator/filter_iterator.hpp>
+
+export module caspar.modules.image.util.view;
 
 namespace caspar { namespace image {
 
@@ -33,7 +35,7 @@ namespace caspar { namespace image {
  * the RGBAPixel concept which does not care about the order between RGBA but
  * only requires that all 4 channel has accessors.
  */
-class bgra_pixel
+export class bgra_pixel
 {
     uint8_t b_;
     uint8_t g_;
@@ -59,7 +61,7 @@ class bgra_pixel
     uint8_t&       a() { return a_; }
 };
 
-template <class PackedPixel>
+export template <class PackedPixel>
 class image_sub_view;
 
 /**
@@ -69,7 +71,7 @@ class image_sub_view;
  * <p>
  * Models the the ImageView concept.
  */
-template <class PackedPixel>
+export template <class PackedPixel>
 class image_view
 {
   public:
@@ -136,7 +138,7 @@ class image_view
     int          height_;
 };
 
-template <class PackedPixel>
+export template <class PackedPixel>
 class is_within_view
 {
   public:
@@ -166,7 +168,7 @@ class is_within_view
     bool               no_check_;
 };
 
-template <class PackedPixel>
+export template <class PackedPixel>
 struct image_stride_iterator : public boost::filter_iterator<is_within_view<PackedPixel>, PackedPixel*>
 {
     image_stride_iterator(PackedPixel* begin, PackedPixel* end, int width, int stride)
@@ -183,7 +185,7 @@ struct image_stride_iterator : public boost::filter_iterator<is_within_view<Pack
  * <p>
  * This also models the ImageView concept.
  */
-template <class PackedPixel>
+export template <class PackedPixel>
 class image_sub_view
 {
   private:

@@ -19,13 +19,16 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#include "image.h"
-
-#include "consumer/image_consumer.h"
-#include "producer/image_producer.h"
-#include "producer/image_scroll_producer.h"
+module;
 
 #include <common/utf.h>
+#include <core/module_dependencies.h>
+
+module caspar.modules.image;
+
+import caspar.modules.image.consumer;
+import caspar.modules.image.producer;
+import caspar.modules.image.scroll_producer;
 
 namespace caspar { namespace image {
 

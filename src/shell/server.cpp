@@ -19,6 +19,7 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 import caspar.modules.oal;
+import caspar.modules.image;
 #include "included_modules.h"
 
 #include "server.h"
@@ -45,8 +46,6 @@ import caspar.modules.oal;
 #include <core/producer/frame_producer.h>
 #include <core/video_channel.h>
 #include <core/video_format.h>
-
-#include <modules/image/consumer/image_consumer.h>
 
 #include <protocol/amcp/AMCPCommandsImpl.h>
 #include <protocol/amcp/AMCPProtocolStrategy.h>
@@ -140,6 +139,7 @@ struct server::impl
             cg_registry_, producer_registry_, consumer_registry_, amcp_command_repo_wrapper_);
         initialize_modules(dependencies);
         oal::init(dependencies);
+        image::init(dependencies);
         CASPAR_LOG(info) << L"Initialized oal module.";
 
         CASPAR_LOG(info) << L"Initialized modules.";

@@ -1,4 +1,3 @@
-#pragma once
 /*
  * Copyright (c) 2011 Sveriges Television AB <info@casparcg.com>
  *
@@ -20,16 +19,18 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#pragma once
+module;
 
 #include <core/producer/frame_producer.h>
 
 #include <string>
 #include <vector>
 
+export module caspar.modules.image.scroll_producer;
+
 namespace caspar { namespace image {
 
-spl::shared_ptr<core::frame_producer> create_scroll_producer(const core::frame_producer_dependencies& dependencies,
+export spl::shared_ptr<core::frame_producer> create_scroll_producer(const core::frame_producer_dependencies& dependencies,
                                                              const std::vector<std::wstring>&         params);
 
 }} // namespace caspar::image

@@ -16,19 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with CasparCG. If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Julian Waller, julian@superfly.tv
+ * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#pragma once
+module;
 
-#include <ffmpeg/util/av_util.h>
+#include <core/producer/frame_producer.h>
 
-#include <memory>
+#include <string>
+#include <vector>
 
-namespace caspar::image {
+export module caspar.modules.image.producer;
 
-bool is_frame_compatible_with_mixer(const std::shared_ptr<AVFrame>& src);
+namespace caspar { namespace image {
 
-std::shared_ptr<AVFrame> convert_image_frame(const std::shared_ptr<AVFrame>& src, AVPixelFormat pixFmt);
+export spl::shared_ptr<core::frame_producer> create_producer(const core::frame_producer_dependencies& dependencies,
+                                                      const std::vector<std::wstring>&         params);
 
-} // namespace caspar::image
+}} // namespace caspar::image

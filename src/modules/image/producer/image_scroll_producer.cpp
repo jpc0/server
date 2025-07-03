@@ -20,14 +20,12 @@
  * Author: Helge Norberg, helge.norberg@svt.se
  */
 
-#include "image_scroll_producer.h"
-
-#include "../util/image_algorithms.h"
-#include "../util/image_converter.h"
-#include "../util/image_loader.h"
-#include "../util/image_view.h"
+module;
 
 #include <core/frame/frame_transform.h>
+#include <core/producer/frame_producer.h>
+#include <core/frame/draw_frame.h>
+#include <core/frame/pixel_format.h>
 
 #include <common/env.h>
 #include <common/filesystem.h>
@@ -58,6 +56,9 @@ extern "C" {
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
+
+module caspar.modules.image.scroll_producer;
+import caspar.modules.image.util;
 
 namespace caspar { namespace image {
 

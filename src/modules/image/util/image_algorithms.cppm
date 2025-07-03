@@ -19,12 +19,14 @@
  * Author: Helge Norberg, helge.norberg@svt.se
  */
 
-#pragma once
+module;
 
 #include <common/tweener.h>
 
 #include <algorithm>
 #include <cstdint>
+
+export module caspar.modules.image.util.algorithms;
 
 namespace caspar { namespace image {
 
@@ -32,7 +34,7 @@ namespace caspar { namespace image {
  * Helper for calculating the color of a pixel given any number of of other
  * pixels (each with their own weight).
  */
-class rgba_weighting
+export class rgba_weighting
 {
     int r            = 0;
     int g            = 0;
@@ -62,7 +64,7 @@ class rgba_weighting
     }
 };
 
-template <class T>
+export template <class T>
 std::vector<T> get_tweened_values(const caspar::tweener& tweener, size_t num_values, T from, T to)
 {
     std::vector<T> result;
@@ -99,7 +101,7 @@ std::vector<T> get_tweened_values(const caspar::tweener& tweener, size_t num_val
  *                                 weights of each relative position in the
  *                                 motion trail.
  */
-template <class SrcView, class DstView>
+export template <class SrcView, class DstView>
 void blur(const SrcView&                          src,
           DstView&                                dst,
           const std::vector<std::pair<int, int>>& motion_trail_coordinates,
@@ -140,7 +142,7 @@ void blur(const SrcView&                          src,
  *
  * @return the x-y pairs.
  */
-std::vector<std::pair<int, int>> get_line_points(int num_pixels, double angle_radians);
+export std::vector<std::pair<int, int>> get_line_points(int num_pixels, double angle_radians);
 
 /**
  * Directionally blur a source image modelling the ImageView concept and store
@@ -158,7 +160,7 @@ std::vector<std::pair<int, int>> get_line_points(int num_pixels, double angle_ra
  * @param tweener       The tweener to use to create a pixel weighting curve
  *                      with.
  */
-template <class SrcView, class DstView>
+export template <class SrcView, class DstView>
 void blur(const SrcView& src, DstView& dst, double angle_radians, int blur_px, const caspar::tweener& tweener)
 {
     auto motion_trail = get_line_points(blur_px, angle_radians);
@@ -175,7 +177,7 @@ void blur(const SrcView& src, DstView& dst, double angle_radians, int blur_px, c
  *                       the ImageView concept and have a pixel type that
  *                       models RGBAPixel.
  */
-template <class SrcDstView>
+export template <class SrcDstView>
 void premultiply(SrcDstView& view_to_modify)
 {
     std::for_each(view_to_modify.begin(), view_to_modify.end(), [&](typename SrcDstView::pixel_type& pixel) {
@@ -205,7 +207,7 @@ void premultiply(SrcDstView& view_to_modify)
  *                       the ImageView concept and have a pixel type that
  *                       models RGBAPixel.
  */
-template <class SrcDstView>
+export template <class SrcDstView>
 void unmultiply(SrcDstView& view_to_modify)
 {
     std::for_each(view_to_modify.begin(), view_to_modify.end(), [&](typename SrcDstView::pixel_type& pixel) {

@@ -20,8 +20,7 @@
  * Author: Julian Waller, julian@superfly.tv
  */
 
-#include "image_loader.h"
-#include "image_algorithms.h"
+module;
 
 #include <common/except.h>
 
@@ -32,6 +31,7 @@
 #include "common/scope_exit.h"
 
 #include <ffmpeg/util/av_assert.h>
+#include <ffmpeg/util/av_util.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/exception/errinfo_file_name.hpp>
@@ -55,6 +55,8 @@ extern "C" {
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
+module caspar.modules.image.util.loader;
+import caspar.modules.image.util.algorithms;
 
 namespace caspar { namespace image {
 

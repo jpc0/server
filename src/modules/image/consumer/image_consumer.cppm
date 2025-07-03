@@ -19,16 +19,24 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#pragma once
+module;
 
-#include <core/producer/frame_producer.h>
+#include <common/bit_depth.hpp>
+#include <common/memory.h>
+
+#include <boost/property_tree/ptree_fwd.hpp>
+#include <core/consumer/frame_consumer.h>
 
 #include <string>
 #include <vector>
 
+export module caspar.modules.image.consumer;
+
 namespace caspar { namespace image {
 
-spl::shared_ptr<core::frame_producer> create_producer(const core::frame_producer_dependencies& dependencies,
-                                                      const std::vector<std::wstring>&         params);
+export spl::shared_ptr<core::frame_consumer> create_consumer(const std::vector<std::wstring>&     params,
+                                                      const core::video_format_repository& format_repository,
+                                                      const std::vector<spl::shared_ptr<core::video_channel>>& channels,
+                                                      const core::channel_info& channel_info);
 
 }} // namespace caspar::image

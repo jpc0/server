@@ -19,9 +19,10 @@
  * Author: Julian Waller, julian@superfly.tv
  */
 
-#include "image_converter.h"
+module;
 
 #include <common/except.h>
+#include <ffmpeg/util/av_util.h>
 
 #ifdef _MSC_VER
 #pragma warning(push)
@@ -38,6 +39,7 @@ extern "C" {
 #pragma warning(pop)
 #endif
 
+module caspar.modules.image.util.converter;
 namespace caspar::image {
 
 bool is_frame_compatible_with_mixer(const std::shared_ptr<AVFrame>& src)

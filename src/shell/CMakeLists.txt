@@ -51,6 +51,7 @@ target_link_libraries(casparcg
 		protocol
 
         oal
+        image
 
 		"${CASPARCG_MODULE_TARGETS}"
 
