@@ -19,8 +19,10 @@
  * Author: Julian Waller, git@julusian.co.uk
  */
 
-#pragma once
+module;
 
 #include <SFML/Window.hpp>
 
-bool window_always_on_top(const sf::Window& window);
+export module caspar.modules.screen.util.x11;
+
+export bool window_always_on_top(const sf::Window& window);

@@ -19,10 +19,13 @@
  * Author: Julian Waller, git@julusian.co.uk
  */
 
-#include "x11_util.h"
+module;
+#include <SFML/Window.hpp>
 
 #include <X11/X.h>
 #include <X11/Xlib.h>
+
+module caspar.modules.screen.util.x11;
 
 bool window_always_on_top(const sf::Window& window)
 {

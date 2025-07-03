@@ -19,7 +19,7 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#include "screen_consumer.h"
+module;
 
 #include <GL/glew.h>
 #include <SFML/Window.hpp>
@@ -57,12 +57,23 @@
 #pragma warning(push)
 #pragma warning(disable : 4244)
 #else
-#include "../util/x11_util.h"
 #endif
 
-#include "consumer_screen_fragment.h"
-#include "consumer_screen_vertex.h"
 #include <accelerator/ogl/util/shader.h>
+
+module caspar.modules.screen.consumer;
+
+#ifndef _MSC_VER
+import caspar.modules.screen.util.x11;
+#endif
+
+constexpr char const vertex_shader[]{
+    #embed "screen.vert"
+};
+
+constexpr char const fragment_shader[]{
+    #embed "screen.frag"
+};
 
 namespace caspar { namespace screen {
 

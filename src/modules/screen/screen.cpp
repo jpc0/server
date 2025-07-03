@@ -19,11 +19,13 @@
  * Author: Robert Nagy, ronag89@gmail.com
  */
 
-#include "screen.h"
+module;
 
-#include "consumer/screen_consumer.h"
 
 #include <core/consumer/frame_consumer.h>
+
+module caspar.modules.screen;
+import caspar.modules.screen.consumer;
 
 namespace caspar { namespace screen {
 

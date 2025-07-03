@@ -20,6 +20,7 @@
  */
 import caspar.modules.oal;
 import caspar.modules.image;
+import caspar.modules.screen;
 #include "included_modules.h"
 
 #include "server.h"
@@ -140,6 +141,7 @@ struct server::impl
         initialize_modules(dependencies);
         oal::init(dependencies);
         image::init(dependencies);
+        screen::init(dependencies);
         CASPAR_LOG(info) << L"Initialized oal module.";
 
         CASPAR_LOG(info) << L"Initialized modules.";

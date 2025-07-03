@@ -52,6 +52,7 @@ target_link_libraries(casparcg
 
         oal
         image
+        screen
 
 		"${CASPARCG_MODULE_TARGETS}"
 
